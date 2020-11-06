@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+   <table class="table table-striped">
+       <thead>
+       <tr>
+           <th>Symbol</th>
+           <th>Company Name</th>
+           <th>Shares</th>
+           <th>Price</th>
+           <th>TOTAL</th>
+       </tr>
+       </thead>
+       <tfoot>
+           <tr>
+                <td colspan="4"></td>
+                <td>${{rows[0]["ROUND(u.cash)"]}}</td>
+            </tr>
+       </tfoot>
+       <tbody>
+
+       {% for row in rows %}
+           <tr>
+             {% if row["SUM(p.shares)"]>0 %}
+             <td>{{row["symbol"]}}</td>
+             <td>{{row["companyN"]}}</td>
+             <td>{{row["SUM(p.shares)"]}}</td>
+             <td>{{clever_function(row, "symbol", "price",1)}}</td>
+             <td>{{clever_function(row, "symbol", "price",row["SUM(p.shares)"])}}</td>
+             {% else %}
+             <td></td>
+             <td></td>
+             <td></td>
+             <td></td>
+             <td></td>
+             {% endif %}
+
+           </tr>
+
+       {% endfor %}
+        <form action="/" method="post" class="container-fluid">
+                <h3 class="alert alert-success">Quick shares trading tool</h3>
+                <select class="form-control" name="symbol">
+                    <option disabled="" selected="" value="">Symbol</option>
+                    {% for row in rows %}
+                    <option value="{{row['symbol']}}">{{row["symbol"]}}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-group">
+                    <input autocomplete="off" class="form-control" min="1" name="shares" placeholder="Shares" type="number">
+                </div>
+                <input class="btn btn-primary" name="button" value="Buy shares" type="submit">
+                <input class="btn btn-primary" name="button" value="Sell shares" type="submit">
+        </form>
+       </tbody>
+  </table>
+{% endblock %}
